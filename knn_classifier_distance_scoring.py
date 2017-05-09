@@ -4,14 +4,13 @@ from scipy.spatial import distance
 from sklearn import datasets
 from sklearn.metrics import accuracy_score
 from sklearn.cross_validation import train_test_split
-import numpy
 
 def euc(point_a, point_b):
     "Returns the euclidean distance between pointA and pointB."
     return distance.euclidean(point_a, point_b)
 
 class KNNClassifier(object):
-    "Classifies data up to k nearest neighbors usingn a weighted scoring system."
+    "Classifies data up to k nearest neighbors using a weighted scoring system."
 
     def __init__(self, k):
         self.k = k
@@ -56,16 +55,13 @@ class KNNClassifier(object):
                 closest_items[dist] = i
                 largest = max(closest_items.keys())
 
-        # This value is solely to prevent divide by zero errors.
-        smallest_float = numpy.nextafter(0, 1)
-
         # We get the labels for each of the closest items and
         # score them based on their distance.
         # The kth closest neighbor gets a score of 1/k.
         label_scores = {}
         for i, (key, value) in enumerate(closest_items.items()):
             label = self.y_train[value]
-            label_scores[label] = (label_scores.get(label, 0) + (1.0 / (key + smallest_float)))
+            label_scores[label] = (label_scores.get(label, 0) + (1.0 / (i + 1.0)))
 
         # Sort the results, with the highest scoring label first.
         sorted_x = sorted(label_scores.items(), key=lambda i: i[1], reverse=True)
