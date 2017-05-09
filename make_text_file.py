@@ -4,7 +4,7 @@ import os
 
 while True:
     FNAME = raw_input("Enter file name: ")
-    if os.path.exists(fname):
+    if os.path.exists(FNAME):
         print "Error: '%s' already exists" % FNAME
     else:
         break
