@@ -10,7 +10,7 @@ def euc(point_a, point_b):
     return distance.euclidean(point_a, point_b)
 
 class KNNClassifier(object):
-    "Classifies data up to k nearest neighbors."
+    "Classifies data up to k nearest neighbors usingn a weighted scoring system."
 
     def __init__(self, k):
         self.k = k
@@ -59,13 +59,13 @@ class KNNClassifier(object):
         # score them based on their distance.
         # The kth closest neighbor gets a score of 1/k.
         label_scores = {}
-        for i, (k, v) in enumerate(closest_items.items()):
-            label = self.y_train[v]
+        for i, (key, value) in enumerate(closest_items.items()):
+            label = self.y_train[value]
             label_scores[label] = (label_scores.get(label, 0) + (1.0 / (i + 1.0)))
 
+        # Sort the results, with the highest scoring label first.
         sorted_x = sorted(label_scores.items(), key=lambda i: i[1], reverse=True)
 
-        print sorted_x
         return sorted_x[0][0]
 
 IRIS = datasets.load_iris()
@@ -74,7 +74,19 @@ TARGET = IRIS.target
 
 X_TRAIN, X_TEST, Y_TRAIN, Y_TEST = train_test_split(DATA, TARGET, test_size=.5)
 
-MY_CLASSIFIER = KNNClassifier(5)
+VALID = False
+while not VALID:
+    INPUT = raw_input("Enter value of k (1-75): ")
+    try:
+        TEST_K = int(INPUT)
+        if 0 < TEST_K <= 75:
+            VALID = True
+        else:
+            print "Value must be an integer (1-75)."
+    except ValueError:
+        print "Value must be an integer (1-75)."
+
+MY_CLASSIFIER = KNNClassifier(int(TEST_K))
 
 MY_CLASSIFIER.fit(X_TRAIN, Y_TRAIN)
 
